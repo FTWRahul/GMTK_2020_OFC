@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,6 +9,19 @@ public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
     public UnityEvent buttonSelected;
     public UnityEvent buttonDeselected;
     public UnityEvent buttonPressed;
+
+    public GameObject activeConfirmation;
+
+    private bool isActive;
+
+    public bool IsActive => isActive;
+
+    public void FlipActiveStatus()
+    {
+        isActive = !isActive;
+        activeConfirmation.SetActive(isActive);
+    }
+
     public void OnSelect()
     {
         buttonSelected?.Invoke();
@@ -20,4 +34,7 @@ public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
     {
         buttonPressed?.Invoke();
     }
+    
+    
+    
 }

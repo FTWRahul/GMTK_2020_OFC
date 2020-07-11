@@ -26,7 +26,7 @@ public class SelectionManager : MonoBehaviour
         //Deselection Response
         if (_selectionResponse != null)
         {
-            _selectionResponse.OnSelect();
+            _selectionResponse.OnDeselect();
         }
 
         #region Selection Determination
@@ -51,7 +51,7 @@ public class SelectionManager : MonoBehaviour
         //Selection Response
         if (_selectionResponse != null)
         {
-            _selectionResponse.OnDeselect();
+            _selectionResponse.OnSelect();
         }
         
     }

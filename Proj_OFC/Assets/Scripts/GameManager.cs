@@ -9,7 +9,13 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance => _instance;
 
+    public CommandManager commandManager;
+
     public float mouseSensitivity = 50;
+
+    public List<ButtonSelectionResponse> typeButtons;
+    public List<ButtonSelectionResponse> otherButtons;
+    
     private void Awake()
     {
         if (_instance == null)
@@ -21,5 +27,35 @@ public class GameManager : MonoBehaviour
             Destroy(this);
         }
         DontDestroyOnLoad(gameObject);
+        commandManager = FindObjectOfType<CommandManager>();
+    }
+
+    public void ResetTypeButtonsExcept(ButtonSelectionResponse thisOne)
+    {
+        foreach (var btn in typeButtons)
+        {
+            if (btn != thisOne && btn.IsActive)
+            {
+                btn.OnPress();
+            }
+        }
+    }
+
+    public void ResetAllButtons()
+    {
+        foreach (var btn in typeButtons)
+        {
+            if (btn.IsActive)
+            {
+                btn.OnPress();
+            }
+        }
+        foreach (var btn in otherButtons)
+        {
+            if (btn.IsActive)
+            {
+                btn.OnPress();
+            }
+        }
     }
 }
