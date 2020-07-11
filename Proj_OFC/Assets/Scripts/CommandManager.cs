@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public enum CommandType
 {
@@ -12,6 +14,36 @@ public class CommandManager : MonoBehaviour
     private bool _right;
     private CommandType _type = CommandType.None;
     private Sequence _mySequence;
+
+    private CameraShake _cameraShake;
+    private float _trauma = .3f;
+    private float defaultDecay;
+
+    [SerializeField] private int energy;
+    [SerializeField] int cost;
+    [SerializeField] private Slider energySlider;
+
+    [SerializeField] float rotationSpeed;
+    [SerializeField] float jumpDistance;
+    [SerializeField] float jumpHeight;
+    [SerializeField] float moveDistance;
+    [SerializeField] float moveSpeed;
+
+    private bool _lastMovedLeft;
+
+    public int Energy
+    {
+        get => energy;
+        set
+        {
+            energy = value;
+            if (energy > 1)
+            {
+                energySlider.value = energy;
+            }
+        }
+    }
+
     public bool Left
     {
         get => _left;
@@ -32,9 +64,16 @@ public class CommandManager : MonoBehaviour
     
     [SerializeField] private UnityEvent onError;
 
+    private void Awake()
+    {
+        _cameraShake = GetComponentInChildren<CameraShake>();
+        defaultDecay = _cameraShake.Decay;
+    }
+
     [ContextMenu("Execute The thing")]
     public void ExecuteCommand()
     {
+        Energy -= cost;
         if (!_left && !_right)
         {
             Error();
@@ -50,9 +89,31 @@ public class CommandManager : MonoBehaviour
             Error();
             return;
         }
-        else if(_type == CommandType.Rotate)
+        if(_type == CommandType.Rotate)
         {
             RotatePlayer();
+            return;
+        }
+        if (_type == CommandType.Move)
+        {
+            MovePlayer();
+            return;
+        }
+
+        if (_type == CommandType.Melee)
+        {
+            Melee();
+            return;
+        }
+        if (_type == CommandType.Rocket)
+        {
+            Rockets();
+            return;
+        }
+        if (_type == CommandType.Laser)
+        {
+            Laser();
+            return;
         }
     }
 
@@ -63,20 +124,65 @@ public class CommandManager : MonoBehaviour
 
     private void MovePlayer()
     {
-        //move corresponding leg
+        
+        _mySequence = DOTween.Sequence().PrependInterval(moveSpeed).PrependCallback(CameraJolt);
+        if (_left && _right)
+        {
+            //jump
+            JumpForward();
+        }
+        else if (_lastMovedLeft && !_left)
+        {
+            //move
+            MoveForward();
+            _lastMovedLeft = false;
+        }
+        else if(!_lastMovedLeft && !_right)
+        {
+           //move again 
+           MoveForward();
+           _lastMovedLeft = true;
+        }
     }
+
+    private void JumpForward()
+    {
+        CameraSteadyShake();
+        SetTraumaDecay(.8f);
+        _mySequence.Prepend(transform
+            .DOLocalJump(new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z) + transform.forward * moveDistance,
+                jumpHeight, 1, 2f).SetEase(Ease.InSine));
+    }
+
+    private void MoveForward()
+    {
+        SetTraumaAmount(.2f);
+        CameraSteadyShake();
+        _mySequence.Prepend(transform
+            .DOLocalMove(new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z) + transform.forward * moveDistance,
+                moveSpeed).SetEase(Ease.InSine));
+    }
+
     private void RotatePlayer()
     {
-        _mySequence = DOTween.Sequence();
+        SetTraumaAmount(.1f);
+        CameraSteadyShake();
+        _mySequence = DOTween.Sequence().PrependInterval(rotationSpeed).PrependCallback(CameraJolt);
         if (_left)
         {
-            _mySequence.Append(transform.DOLocalRotate(Vector3.down * 90, 1.5f).SetEase(Ease.InCubic));
+            RotateTo(-90);
         }
         else
         {
-            _mySequence.Append(transform.DOLocalRotate(Vector3.up * 90, 1.5f).SetEase(Ease.InCubic));
+            RotateTo(90);
         }
         //Rotate by 90
+    }
+
+    private void RotateTo(float amount)
+    {
+        _mySequence.Prepend(transform.DOLocalRotate(new Vector3(transform.localRotation.eulerAngles.x, transform.localRotation.eulerAngles.y + amount, transform.localRotation.eulerAngles.z),
+            rotationSpeed).SetEase(Ease.InCubic));
     }
 
     private void Melee()
@@ -99,5 +205,27 @@ public class CommandManager : MonoBehaviour
         _left = false;
         _right = false;
         _type = CommandType.None;
+    }
+
+    public void SetTraumaAmount(float amount)
+    {
+        _trauma = amount;
+    }
+    public void SetTraumaDecay(float amount)
+    {
+        _cameraShake.Decay = amount;
+    }
+    private void CameraJolt()
+    {
+        SetTraumaDecay(.8f);
+        SetTraumaAmount(1f);
+        _cameraShake.Trauma = _trauma;
+        SetTraumaAmount(.2f);
+    }
+
+    private void CameraSteadyShake()
+    {
+        SetTraumaDecay(0);
+        _cameraShake.Trauma = _trauma;
     }
 }

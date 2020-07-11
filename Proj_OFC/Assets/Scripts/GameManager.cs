@@ -48,15 +48,17 @@ public class GameManager : MonoBehaviour
         {
             if (btn.IsActive)
             {
-                btn.OnPress();
+                btn.FlipActiveStatus();
+                btn.GetComponent<TypeCommand>().IsInUse = false;
             }
         }
         foreach (var btn in otherButtons)
         {
             if (btn.IsActive)
             {
-                btn.OnPress();
+                btn.FlipActiveStatus();
             }
         }
+        commandManager.ResetCommand();
     }
 }

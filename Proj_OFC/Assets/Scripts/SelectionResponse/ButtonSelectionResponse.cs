@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
+using DG.Tweening;
+using UnityEngine.UI;
 
 public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
 {
@@ -13,6 +13,9 @@ public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
     public GameObject activeConfirmation;
 
     private bool isActive;
+
+    [SerializeField] private TextMeshProUGUI instructionText;
+    [SerializeField] private Image instructionIcon;
 
     public bool IsActive => isActive;
 
@@ -33,12 +36,30 @@ public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
     public virtual void OnPress()
     {
         buttonPressed?.Invoke();
-        //ResetOtherButtonsOfType();
     }
 
     public void ResetOtherButtonsOfType()
     {
         GameManager.Instance.ResetTypeButtonsExcept(this);
+    }
+
+    public void ClearAllButtons()
+    {
+        GameManager.Instance.ResetAllButtons();
+    }
+
+    [ContextMenu( "Fade it away")]
+    public void FadeInstructionIcon()
+    {
+        if (instructionText != null)
+        {
+            instructionText.DOFade(0, Random.Range(1f,2f)).SetEase(Ease.InOutBounce);
+        }
+
+        if (instructionIcon != null)
+        {
+            instructionIcon.DOFade(0, Random.Range(1f,2f)).SetEase(Ease.InOutBounce);
+        }
     }
     
 }

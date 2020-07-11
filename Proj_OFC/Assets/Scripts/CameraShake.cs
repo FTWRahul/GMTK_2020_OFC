@@ -38,6 +38,18 @@ public class CameraShake : MonoBehaviour {
         }
     }
 
+    public float Decay
+    {
+        get
+        {
+            return defaultSettings.traumaDecay;
+        }
+        set
+        {
+            defaultSettings.traumaDecay = value;
+        }
+    }
+
     private void Awake()
     {
         ShakeSettings = defaultSettings;
