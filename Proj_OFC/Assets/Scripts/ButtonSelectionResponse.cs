@@ -30,11 +30,15 @@ public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
     {
         buttonDeselected?.Invoke();
     }
-    public void OnPress()
+    public virtual void OnPress()
     {
         buttonPressed?.Invoke();
+        //ResetOtherButtonsOfType();
     }
-    
-    
+
+    public void ResetOtherButtonsOfType()
+    {
+        GameManager.Instance.ResetTypeButtonsExcept(this);
+    }
     
 }

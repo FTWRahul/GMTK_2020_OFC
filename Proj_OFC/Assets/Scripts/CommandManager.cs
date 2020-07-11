@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
+using DG.Tweening;
 
 public enum CommandType
 {
@@ -11,8 +10,8 @@ public class CommandManager : MonoBehaviour
 {
     private bool _left;
     private bool _right;
-    private CommandType _type;
-    
+    private CommandType _type = CommandType.None;
+    private Sequence _mySequence;
     public bool Left
     {
         get => _left;
@@ -33,6 +32,7 @@ public class CommandManager : MonoBehaviour
     
     [SerializeField] private UnityEvent onError;
 
+    [ContextMenu("Execute The thing")]
     public void ExecuteCommand()
     {
         if (!_left && !_right)
@@ -50,7 +50,10 @@ public class CommandManager : MonoBehaviour
             Error();
             return;
         }
-        
+        else if(_type == CommandType.Rotate)
+        {
+            RotatePlayer();
+        }
     }
 
     private void Error()
@@ -64,6 +67,15 @@ public class CommandManager : MonoBehaviour
     }
     private void RotatePlayer()
     {
+        _mySequence = DOTween.Sequence();
+        if (_left)
+        {
+            _mySequence.Append(transform.DOLocalRotate(Vector3.down * 90, 1.5f).SetEase(Ease.InCubic));
+        }
+        else
+        {
+            _mySequence.Append(transform.DOLocalRotate(Vector3.up * 90, 1.5f).SetEase(Ease.InCubic));
+        }
         //Rotate by 90
     }
 

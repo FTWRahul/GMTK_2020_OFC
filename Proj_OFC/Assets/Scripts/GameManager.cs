@@ -36,7 +36,8 @@ public class GameManager : MonoBehaviour
         {
             if (btn != thisOne && btn.IsActive)
             {
-                btn.OnPress();
+                btn.FlipActiveStatus();
+                btn.GetComponent<TypeCommand>().IsInUse = false;
             }
         }
     }
