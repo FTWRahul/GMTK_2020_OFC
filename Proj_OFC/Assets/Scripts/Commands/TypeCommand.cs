@@ -4,6 +4,8 @@ using UnityEngine;
 public class TypeCommand : Command
 {
     [SerializeField] private CommandType type;
+    
+    public CommandType TypeOfCommand => type;
 
     private bool _isInUse;
     

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public enum CommandType
 {
@@ -17,7 +18,7 @@ public class CommandManager : MonoBehaviour
 
     private CameraShake _cameraShake;
     private float _trauma = .3f;
-    private float defaultDecay;
+    private float _defaultDecay;
 
     [SerializeField] private int energy;
     [SerializeField] int cost;
@@ -28,6 +29,9 @@ public class CommandManager : MonoBehaviour
     [SerializeField] float jumpHeight;
     [SerializeField] float moveDistance;
     [SerializeField] float moveSpeed;
+    [SerializeField] float ringLimit;
+    [SerializeField] GameObject rocketPrefab;
+    [SerializeField] private Transform rocketSpawnPoint;
 
     private bool _lastMovedLeft;
 
@@ -40,6 +44,12 @@ public class CommandManager : MonoBehaviour
             if (energy > 1)
             {
                 energySlider.value = energy;
+                GameManager.Instance.TurnOffRandomButton();
+            }
+
+            if (energy < 1)
+            {
+                GameManager.Instance.EndingSequence();
             }
         }
     }
@@ -67,7 +77,7 @@ public class CommandManager : MonoBehaviour
     private void Awake()
     {
         _cameraShake = GetComponentInChildren<CameraShake>();
-        defaultDecay = _cameraShake.Decay;
+        _defaultDecay = _cameraShake.Decay;
     }
 
     [ContextMenu("Execute The thing")]
@@ -99,27 +109,44 @@ public class CommandManager : MonoBehaviour
             MovePlayer();
             return;
         }
-
-        if (_type == CommandType.Melee)
-        {
-            Melee();
-            return;
-        }
         if (_type == CommandType.Rocket)
         {
             Rockets();
             return;
         }
-        if (_type == CommandType.Laser)
-        {
-            Laser();
-            return;
-        }
+
     }
 
     private void Error()
     {
         onError?.Invoke();
+    }
+
+    private void Update()
+    {
+        if (transform.localPosition.x < -8 )
+        {
+            transform.localPosition = new Vector3(-7, transform.localPosition.y, transform.localPosition.z);
+            return;
+        }
+
+        if (transform.localPosition.x > ringLimit)
+        {
+            transform.localPosition = new Vector3(ringLimit - 1, transform.localPosition.y, transform.localPosition.z);
+            return;
+        }
+
+        if (transform.localPosition.z < -8)
+        {
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, -7);
+            return;
+        }
+
+        if (transform.localPosition.z > ringLimit)
+        {
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, ringLimit - 1);
+            return;
+        }
     }
 
     private void MovePlayer()
@@ -150,13 +177,13 @@ public class CommandManager : MonoBehaviour
         CameraSteadyShake();
         SetTraumaDecay(.8f);
         _mySequence.Prepend(transform
-            .DOLocalJump(new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z) + transform.forward * moveDistance,
+            .DOLocalJump(new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z) + transform.forward * jumpDistance,
                 jumpHeight, 1, 2f).SetEase(Ease.InSine));
     }
 
     private void MoveForward()
     {
-        SetTraumaAmount(.2f);
+        SetTraumaAmount(.1f);
         CameraSteadyShake();
         _mySequence.Prepend(transform
             .DOLocalMove(new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z) + transform.forward * moveDistance,
@@ -184,22 +211,18 @@ public class CommandManager : MonoBehaviour
         _mySequence.Prepend(transform.DOLocalRotate(new Vector3(transform.localRotation.eulerAngles.x, transform.localRotation.eulerAngles.y + amount, transform.localRotation.eulerAngles.z),
             rotationSpeed).SetEase(Ease.InCubic));
     }
-
-    private void Melee()
-    {
-        //Punch with fists
-    }
-
+    
     private void Rockets()
     {
         //Fire Homing Rockets
+        CameraJolt();
+        var rand = Random.Range(0, 3);
+        for (int i = 0; i < rand; i++)
+        {
+            GameObject go = Instantiate(rocketPrefab, rocketSpawnPoint.position + new Vector3(Random.Range(-3,3),Random.Range(-3,3),Random.Range(-3,3)), Quaternion.identity);
+        }
     }
-
-    private void Laser()
-    {
-        //Fire Laser
-    }
-
+    
     public void ResetCommand()
     {
         _left = false;

@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
 {
@@ -18,6 +20,11 @@ public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
     [SerializeField] private Image instructionIcon;
 
     public bool IsActive => isActive;
+
+    private void Start()
+    {
+        GameManager.Instance.flickerIconButtons.Add(this);
+    }
 
     public void FlipActiveStatus()
     {
@@ -40,7 +47,7 @@ public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
 
     public void ResetOtherButtonsOfType()
     {
-        GameManager.Instance.ResetTypeButtonsExcept(this);
+        GameManager.Instance.ResetTypeButtonsExcept(GetComponent<TypeCommand>().TypeOfCommand);
     }
 
     public void ClearAllButtons()
@@ -50,6 +57,12 @@ public class ButtonSelectionResponse : MonoBehaviour , ISelectionResponse
 
     [ContextMenu( "Fade it away")]
     public void FadeInstructionIcon()
+    {
+        Invoke(nameof(DelayedFade), Random.Range(1f,5f));
+        
+    }
+
+    private void DelayedFade()
     {
         if (instructionText != null)
         {

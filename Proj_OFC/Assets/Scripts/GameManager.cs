@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,7 +16,17 @@ public class GameManager : MonoBehaviour
 
     public List<ButtonSelectionResponse> typeButtons;
     public List<ButtonSelectionResponse> otherButtons;
-    
+    public List<ButtonSelectionResponse> flickerIconButtons;
+
+    public List<ITakeHit> damageAbles = new List<ITakeHit>();
+
+    private CameraShake _cameraShake;
+
+    public CameraShake CameraShake
+    {
+        get => _cameraShake;
+    }
+
     private void Awake()
     {
         if (_instance == null)
@@ -28,16 +39,23 @@ public class GameManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         commandManager = FindObjectOfType<CommandManager>();
+        _cameraShake = commandManager.GetComponentInChildren<CameraShake>();
     }
 
-    public void ResetTypeButtonsExcept(ButtonSelectionResponse thisOne)
+    private void Start()
+    {
+        StartingSequence();
+    }
+
+    public void ResetTypeButtonsExcept(CommandType thisOne)
     {
         foreach (var btn in typeButtons)
         {
-            if (btn != thisOne && btn.IsActive)
+            var typeScript = btn.GetComponent<TypeCommand>();
+            if (typeScript.TypeOfCommand != thisOne && btn.IsActive)
             {
                 btn.FlipActiveStatus();
-                btn.GetComponent<TypeCommand>().IsInUse = false;
+                typeScript.IsInUse = false;
             }
         }
     }
@@ -61,4 +79,30 @@ public class GameManager : MonoBehaviour
         }
         commandManager.ResetCommand();
     }
+
+    public void TurnOffRandomButton()
+    {
+        var rand = Random.Range(0, flickerIconButtons.Count);
+        flickerIconButtons[rand].FadeInstructionIcon();
+    }
+
+    public void StartingSequence()
+    {
+        StartCoroutine(StartingEnumarator());
+    }
+
+    private IEnumerator StartingEnumarator()
+    {
+        _cameraShake.Trauma = .5f;
+        _cameraShake.Decay = 0;
+        yield return new WaitForSeconds(1f);
+        _cameraShake.Decay = .8f;
+        commandManager.GetComponent<MechSoundManager>().PlayIntro();
+    }
+
+    public void EndingSequence()
+    {
+        
+    }
+    
 }

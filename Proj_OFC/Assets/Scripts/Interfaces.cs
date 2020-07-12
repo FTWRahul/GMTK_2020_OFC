@@ -7,3 +7,16 @@ public interface ISelectionResponse
 
     void OnPress();
 }
+
+public interface ITakeHit
+{
+    void GetHit();
+    Transform GetTransform();
+
+    void Register();
+}
+
+public interface IDealDamage
+{
+    void DealDamage(ITakeHit to);
+}
