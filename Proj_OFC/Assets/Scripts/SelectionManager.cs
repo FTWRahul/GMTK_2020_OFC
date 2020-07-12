@@ -63,4 +63,9 @@ public class SelectionManager : MonoBehaviour
             _selectionResponse.OnPress();
         }
     }
+
+    public void SetTagString(string to)
+    {
+        selectableTag = to;
+    }
 }

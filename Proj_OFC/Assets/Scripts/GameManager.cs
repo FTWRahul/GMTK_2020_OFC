@@ -100,9 +100,20 @@ public class GameManager : MonoBehaviour
         commandManager.GetComponent<MechSoundManager>().PlayIntro();
     }
 
+    [ContextMenu("Test End Sequence")]
     public void EndingSequence()
     {
-        
+        commandManager.GetComponent<MechSoundManager>().PlayEnd();
+        StartCoroutine(EndingEnumerator());
+
     }
+
+    private IEnumerator EndingEnumerator()
+    {
+        yield return new WaitForSeconds(9f);
+        commandManager.ReleaseSelfDestructButton();
+    }
+
+
     
 }

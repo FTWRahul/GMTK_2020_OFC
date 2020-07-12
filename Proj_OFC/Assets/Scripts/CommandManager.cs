@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
@@ -32,6 +33,9 @@ public class CommandManager : MonoBehaviour
     [SerializeField] float ringLimit;
     [SerializeField] GameObject rocketPrefab;
     [SerializeField] private Transform rocketSpawnPoint;
+    
+    [SerializeField] GameObject finalButton;
+
 
     private bool _lastMovedLeft;
 
@@ -73,6 +77,7 @@ public class CommandManager : MonoBehaviour
     }
     
     [SerializeField] private UnityEvent onError;
+    [SerializeField] private UnityEvent onSuccess;
 
     private void Awake()
     {
@@ -99,6 +104,8 @@ public class CommandManager : MonoBehaviour
             Error();
             return;
         }
+
+        Success();
         if(_type == CommandType.Rotate)
         {
             RotatePlayer();
@@ -120,6 +127,11 @@ public class CommandManager : MonoBehaviour
     private void Error()
     {
         onError?.Invoke();
+    }
+
+    private void Success()
+    {
+        onSuccess?.Invoke();
     }
 
     private void Update()
@@ -250,5 +262,15 @@ public class CommandManager : MonoBehaviour
     {
         SetTraumaDecay(0);
         _cameraShake.Trauma = _trauma;
+    }
+    public void ReleaseSelfDestructButton()
+    {
+        StartCoroutine(ButtonSequence());
+    }
+
+    public IEnumerator ButtonSequence()
+    {
+        finalButton.transform.DOLocalMove(finalButton.transform.localPosition + new Vector3(0, .5f,0), 3f).SetEase(Ease.OutQuad);
+        yield return null;
     }
 }

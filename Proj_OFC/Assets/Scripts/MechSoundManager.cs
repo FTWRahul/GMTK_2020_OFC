@@ -14,6 +14,7 @@ public class MechSoundManager : MonoBehaviour
     private List<Object> _randomQuips;
     private List<Object> _errorQuips;
 
+    private bool _isEnding;
     private void Awake()
     {
         _randomQuips = Resources.LoadAll("Sounds/Quips", typeof(AudioClip)).ToList();
@@ -41,6 +42,10 @@ public class MechSoundManager : MonoBehaviour
     }
     private void PlayAudio(AudioClip audioClip)
     {
+        if (_isEnding)
+        {
+            return;
+        }
         source.clip = audioClip;
         source.Play();
     }
@@ -53,6 +58,7 @@ public class MechSoundManager : MonoBehaviour
     public void PlayEnd()
     {
         PlayAudio(_endLines);
+        _isEnding = true;
     }
 
 
