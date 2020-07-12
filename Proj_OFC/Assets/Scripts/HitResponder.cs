@@ -13,6 +13,8 @@ public class HitResponder : MonoBehaviour, ITakeHit
 
     [SerializeField] private UnityEvent onHit;
 
+    private bool _isHitAlready;
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -29,8 +31,13 @@ public class HitResponder : MonoBehaviour, ITakeHit
     [ContextMenu("Test Hit")]
     public void GetHit()
     {
+        if(_isHitAlready)
+            return;
+        DeRegister();
+        _isHitAlready = true;
         StartCoroutine(DeathSequence());
         onHit?.Invoke();
+        
     }
 
     public Transform GetTransform()
@@ -41,6 +48,11 @@ public class HitResponder : MonoBehaviour, ITakeHit
     public void Register()
     {
         GameManager.Instance.damageAbles.Add(this);
+    }
+
+    public void DeRegister()
+    {
+        GameManager.Instance.damageAbles.Remove(this);
     }
 
     public IEnumerator DeathSequence()

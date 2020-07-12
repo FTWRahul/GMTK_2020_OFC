@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
- 
+using UnityEngine.Events;
+
 public class CameraShake : MonoBehaviour {
  
     public bool camShakeAcive = true; //on or off
@@ -25,7 +26,9 @@ public class CameraShake : MonoBehaviour {
     }
     
     float timeCounter = 0; //counter stored for smooth transition
- 
+
+    [SerializeField]
+    private UnityEvent onTraumaAdded;
     public float Trauma //accessor is used to keep trauma within 0 to 1 range
     {
         get
@@ -35,6 +38,7 @@ public class CameraShake : MonoBehaviour {
         set
         {
             trauma = Mathf.Clamp01(value);
+            onTraumaAdded?.Invoke();
         }
     }
 

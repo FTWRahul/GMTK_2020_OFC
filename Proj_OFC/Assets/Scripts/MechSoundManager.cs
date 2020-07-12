@@ -13,12 +13,15 @@ public class MechSoundManager : MonoBehaviour
     private AudioClip _endLines;
     private List<Object> _randomQuips;
     private List<Object> _errorQuips;
+    private List<Object> _nassicStory;
+    private int _storyIndex = 0;
 
     private bool _isEnding;
     private void Awake()
     {
         _randomQuips = Resources.LoadAll("Sounds/Quips", typeof(AudioClip)).ToList();
         _errorQuips = Resources.LoadAll("Sounds/Errors", typeof(AudioClip)).ToList();
+        _nassicStory = Resources.LoadAll("Sounds/Nasic", typeof(AudioClip)).ToList();
         _introLines = (AudioClip)Resources.Load("Sounds/IntroFolder/Intro");
         _endLines = (AudioClip)Resources.Load("Sounds/EndFolder/End");
     }
@@ -26,6 +29,10 @@ public class MechSoundManager : MonoBehaviour
     [ContextMenu("Quip Test")]
     public void PlayRandomQuip()
     {
+        if (_randomQuips.Count < 1)
+        {
+            return;
+        }
         var rand = Random.Range(0, _randomQuips.Count);
         AudioClip audioClip = (AudioClip) _randomQuips[rand];
         PlayAudio(audioClip);
@@ -35,6 +42,10 @@ public class MechSoundManager : MonoBehaviour
     [ContextMenu("Error Test")]
     public void PlayRandomError()
     {
+        if (_errorQuips.Count < 1)
+        {
+            return;
+        }
         var rand = Random.Range(0, _errorQuips.Count);
         AudioClip audioClip = (AudioClip) _errorQuips[rand];
         PlayAudio(audioClip);
@@ -59,6 +70,19 @@ public class MechSoundManager : MonoBehaviour
     {
         PlayAudio(_endLines);
         _isEnding = true;
+    }
+
+    public void PlayNasicStory()
+    {
+        PlayAudio((AudioClip) _nassicStory[_storyIndex]);
+        if (_storyIndex < _nassicStory.Count - 1)
+        {
+            _storyIndex++;
+        }
+        else
+        {
+            _storyIndex = 0;
+        }
     }
 
 

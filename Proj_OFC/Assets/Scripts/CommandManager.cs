@@ -39,6 +39,8 @@ public class CommandManager : MonoBehaviour
 
     private bool _lastMovedLeft;
 
+    public bool LastMovedLeft => _lastMovedLeft;
+
     public int Energy
     {
         get => energy;
@@ -89,6 +91,10 @@ public class CommandManager : MonoBehaviour
     public void ExecuteCommand()
     {
         Energy -= cost;
+        if (Energy <= 0)
+        {
+            return;
+        }
         if (!_left && !_right)
         {
             Error();
@@ -184,6 +190,12 @@ public class CommandManager : MonoBehaviour
         }
     }
 
+    public void JumpOnce()
+    {
+        _mySequence = DOTween.Sequence().PrependInterval(moveSpeed).PrependCallback(CameraJolt);
+        JumpForward();
+
+    }
     private void JumpForward()
     {
         CameraSteadyShake();
@@ -218,6 +230,14 @@ public class CommandManager : MonoBehaviour
         //Rotate by 90
     }
 
+    public void Rotate180()
+    {
+        SetTraumaAmount(.1f);
+        CameraSteadyShake();
+        _mySequence = DOTween.Sequence().PrependInterval(rotationSpeed).PrependCallback(CameraJolt);
+        RotateTo(180);
+    }
+
     private void RotateTo(float amount)
     {
         _mySequence.Prepend(transform.DOLocalRotate(new Vector3(transform.localRotation.eulerAngles.x, transform.localRotation.eulerAngles.y + amount, transform.localRotation.eulerAngles.z),
@@ -231,7 +251,7 @@ public class CommandManager : MonoBehaviour
         var rand = Random.Range(0, 3);
         for (int i = 0; i < rand; i++)
         {
-            GameObject go = Instantiate(rocketPrefab, rocketSpawnPoint.position + new Vector3(Random.Range(-3,3),Random.Range(-3,3),Random.Range(-3,3)), Quaternion.identity);
+            GameObject go = Instantiate(rocketPrefab, rocketSpawnPoint.position + new Vector3(Random.Range(-3,3),Random.Range(-3,3),0), Quaternion.identity);
         }
     }
     

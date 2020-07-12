@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class GameManager : MonoBehaviour
     public List<ITakeHit> damageAbles = new List<ITakeHit>();
 
     private CameraShake _cameraShake;
+
+    private bool _isEnded;
 
     public CameraShake CameraShake
     {
@@ -103,8 +106,13 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Test End Sequence")]
     public void EndingSequence()
     {
+        if (_isEnded)
+        {
+            return;
+        }
         commandManager.GetComponent<MechSoundManager>().PlayEnd();
         StartCoroutine(EndingEnumerator());
+        _isEnded = true;
 
     }
 
@@ -112,6 +120,10 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(9f);
         commandManager.ReleaseSelfDestructButton();
+        yield return new WaitForSeconds(35f);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene("End_Scene");
     }
 
 

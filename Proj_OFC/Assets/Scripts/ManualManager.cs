@@ -20,13 +20,13 @@ public class ManualManager : MonoBehaviour , ISelectionResponse
     public void LockMouse()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = true;
+        Cursor.visible = false;
     }
 
     public void UnLockMouse()
     {
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = false;
+        Cursor.visible = true;
     }
 
     public void LaunchManuel()

@@ -14,6 +14,7 @@ public interface ITakeHit
     Transform GetTransform();
 
     void Register();
+    void DeRegister();
 }
 
 public interface IDealDamage

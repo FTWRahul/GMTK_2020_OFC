@@ -26,12 +26,15 @@ public class HomingRockets : MonoBehaviour
         var closestBoi = GameManager.Instance.damageAbles[0];
         foreach (var boi in GameManager.Instance.damageAbles)
         {
-            var currentDist = (transform.localPosition - boi.GetTransform().localPosition).magnitude;
-            var previousDist = (transform.localPosition - closestBoi.GetTransform().localPosition).magnitude;
-            if (currentDist < previousDist)
+            if (boi != null)
             {
-                closestBoi = boi;
-                _target = closestBoi.GetTransform();
+                var currentDist = (transform.localPosition - boi.GetTransform().localPosition).magnitude;
+                var previousDist = (transform.localPosition - closestBoi.GetTransform().localPosition).magnitude;
+                if (currentDist < previousDist)
+                {
+                    closestBoi = boi;
+                    _target = closestBoi.GetTransform();
+                }
             }
         }
 

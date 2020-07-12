@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 3813417063763339950}
   - component: {fileID: 3813417063763339945}
   - component: {fileID: 3813417063763339944}
-  - component: {fileID: 3813417063763339947}
-  - component: {fileID: 3813417063763339948}
   m_Layer: 8
   m_Name: Rocekt
   m_TagString: Untagged
@@ -3394,46 +3392,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!136 &3813417063763339947
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3813417063763339946}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 1.9526049
-  m_Height: 4.72652
-  m_Direction: 1
-  m_Center: {x: -1.0000001, y: -1.6694076, z: 0}
---- !u!114 &3813417063763339948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3813417063763339946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 372b2ab7a1f5e474da88c588606b9887, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onCollision:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3381819021024815140}
-        m_MethodName: Explode
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &5421238677245957679
 GameObject:
   m_ObjectHideFlags: 0
@@ -4299,7 +4257,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.79
+      scalar: 0
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -8200,6 +8158,8 @@ GameObject:
   - component: {fileID: 6189965771198693786}
   - component: {fileID: 7684899705718106941}
   - component: {fileID: 3381819021024815140}
+  - component: {fileID: 5074568877919225245}
+  - component: {fileID: 8170439831654461130}
   m_Layer: 8
   m_Name: RocketPrefab
   m_TagString: Untagged
@@ -8237,7 +8197,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &3381819021024815140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8252,4 +8212,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   force: 5
   rotForce: 10
-  particlePrefab: {fileID: 0}
+  particlePrefab: {fileID: 7413369195847244134, guid: f0f61bdaba5180a4b825b3d2373d3039,
+    type: 3}
+--- !u!136 &5074568877919225245
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6197630361360771306}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.2
+  m_Height: 0.5
+  m_Direction: 2
+  m_Center: {x: -0.09, y: 0, z: -0.21}
+--- !u!114 &8170439831654461130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6197630361360771306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372b2ab7a1f5e474da88c588606b9887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onCollision:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3381819021024815140}
+        m_MethodName: Explode
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8170439831654461130}
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
