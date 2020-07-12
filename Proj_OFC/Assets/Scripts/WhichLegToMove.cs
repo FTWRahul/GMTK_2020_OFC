@@ -5,14 +5,13 @@ using UnityEngine;
 
 public class WhichLegToMove : MonoBehaviour
 {
-    private AudioSource _audioSource;
+    [SerializeField] private MechSoundManager audioSource;
 
     [SerializeField] private AudioClip _clipLeft;
     [SerializeField] private AudioClip _clipRight;
 
     private void Awake()
     {
-        _audioSource = GetComponent<AudioSource>();
     }
 
     public void WhichLeg()
@@ -29,7 +28,6 @@ public class WhichLegToMove : MonoBehaviour
 
     private void PlayAudio(AudioClip clip)
     {
-        _audioSource.clip = clip;
-        _audioSource.Play();
+        audioSource.PlayExtraSounds(clip);
     }
 }

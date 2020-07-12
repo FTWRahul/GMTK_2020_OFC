@@ -28,8 +28,8 @@ public class HomingRockets : MonoBehaviour
         {
             if (boi != null)
             {
-                var currentDist = (transform.localPosition - boi.GetTransform().localPosition).magnitude;
-                var previousDist = (transform.localPosition - closestBoi.GetTransform().localPosition).magnitude;
+                var currentDist = (transform.position - boi.GetTransform().position).magnitude;
+                var previousDist = (transform.position - closestBoi.GetTransform().position).magnitude;
                 if (currentDist < previousDist)
                 {
                     closestBoi = boi;

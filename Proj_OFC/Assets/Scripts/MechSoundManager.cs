@@ -85,6 +85,17 @@ public class MechSoundManager : MonoBehaviour
         }
     }
 
+    public void PlayExtraSounds(AudioClip clip)
+    {
+        if (source.isPlaying)
+        {
+            return;
+        }
+
+        source.clip = clip;
+        source.Play();
+    }
+
 
     
 }
